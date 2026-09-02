@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Izzy One, todo en un solo lugar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy: #1F2937;
+    --navy-soft: #29384a;
+    --white: #FFFFFF;
+    --slate: #607D8B;
+    --slate-light: #eef1f2;
+    --lila: #8660A9;
+    --azul: #3D59A8;
+    --turquesa: #14B7A5;
+    --grad: linear-gradient(120deg, var(--turquesa), var(--azul));
+    --border: rgba(31,41,55,0.12);
+    --shadow-soft: 0 20px 40px -24px rgba(31,41,55,0.35);
+    --max: 1180px;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    font-family:'Inter', -apple-system, sans-serif;
+    color:var(--navy);
+    background:var(--white);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+
+  img,svg{ display:block; max-width:100%; }
+
+  .wrap{
+    max-width:var(--max);
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  h1,h2,h3{ font-weight:800; letter-spacing:-0.02em; line-height:1.08; }
+
+  button, .btn{
+    font-family:inherit;
+    cursor:pointer;
+    border:none;
+    font-size:15px;
+    font-weight:600;
+  }
+
+  :focus-visible{
+    outline:2px solid var(--turquesa);
+    outline-offset:3px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(255,255,255,0.88);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 32px;
+    max-width:var(--max);
+    margin:0 auto;
+  }
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .logo-img{
+    height:30px;
+    width:auto;
+    display:block;
+  }
+  .nav-links{
+    display:flex;
+    gap:36px;
+    font-size:15px;
+    font-weight:500;
+    color:var(--slate);
+  }
+  .nav-links a:hover{ color:var(--navy); }
+  .nav-links a.active{ color:var(--navy); }
+  .nav-cta{
+    display:flex; gap:12px; align-items:center;
+  }
+
+  .menu-toggle{
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:5px;
+    width:38px; height:38px;
+    background:transparent;
+    border:1px solid var(--border);
+    border-radius:8px;
+    flex-shrink:0;
+  }
+  .menu-toggle .bar{
+    width:18px; height:2px;
+    background:var(--navy);
+    border-radius:2px;
+    transition:transform .25s ease, opacity .2s ease;
+  }
+  .menu-toggle.is-open .bar:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .menu-toggle.is-open .bar:nth-child(2){ opacity:0; }
+  .menu-toggle.is-open .bar:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+  .mobile-nav{
+    max-height:0;
+    overflow:hidden;
+    background:var(--white);
+    border-bottom:1px solid var(--border);
+    transition:max-height .3s ease;
+  }
+  .mobile-nav.open{ max-height:220px; }
+  .mobile-nav .wrap{
+    display:flex;
+    flex-direction:column;
+    padding:4px 32px 18px;
+  }
+  .mobile-nav a{
+    padding:12px 2px;
+    font-size:15px;
+    font-weight:500;
+    color:var(--navy);
+    border-top:1px solid var(--border);
+  }
+
+  .btn-primary{
+    background:var(--navy);
+    color:var(--white);
+    padding:12px 22px;
+    border-radius:10px;
+    transition:transform .15s ease, background .2s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .btn-primary:hover{ background:#111827; transform:translateY(-1px); }
+
+  .btn-ghost{
+    padding:12px 20px;
+    border-radius:10px;
+    color:var(--navy);
+    border:1px solid var(--border);
+    background:transparent;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .btn-ghost:hover{ background:var(--slate-light); }
+
+  @media(max-width:860px){
+    .nav-links{ display:none; }
+    .menu-toggle{ display:flex; }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    position:relative;
+    padding:96px 0 90px;
+    overflow:hidden;
+  }
+  .hero .wrap{
+    display:grid;
+    grid-template-columns:1.05fr 0.95fr;
+    gap:56px;
+    align-items:center;
+  }
+  .eyebrow-plain{
+    font-size:15px;
+    color:var(--slate);
+    margin-bottom:18px;
+  }
+  .hero h1{
+    font-size:clamp(38px, 5.2vw, 62px);
+    color:var(--navy);
+  }
+  .hero p.sub{
+    margin-top:22px;
+    font-size:18px;
+    color:var(--slate);
+    max-width:46ch;
+  }
+  .hero-ctas{
+    margin-top:34px;
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .btn-grad{
+    background:var(--grad);
+    color:var(--white);
+    padding:14px 26px;
+    border-radius:12px;
+    font-size:16px;
+    box-shadow:0 14px 30px -12px rgba(20,183,165,0.55);
+    transition:transform .15s ease, box-shadow .2s ease;
+  }
+  .btn-grad:hover{ transform:translateY(-2px); box-shadow:0 18px 34px -12px rgba(20,183,165,0.65); }
+
+  .btn-outline{
+    padding:14px 26px;
+    border-radius:12px;
+    border:1.5px solid var(--border);
+    color:var(--navy);
+    font-size:16px;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .btn-outline:hover{ border-color:var(--navy); background:var(--slate-light); }
+
+  /* Hero visual: channels converging into Izzy One */
+  .converge{
+    position:relative;
+    height:420px;
+  }
+  @keyframes nodeIn{
+    from{ opacity:0; transform:translateY(10px) scale(.96); }
+    to{ opacity:1; transform:translateY(0) scale(1); }
+  }
+  @keyframes hubIn{
+    from{ opacity:0; }
+    to{ opacity:1; }
+  }
+  @keyframes linesIn{
+    from{ opacity:0; }
+    to{ opacity:1; }
+  }
+  @keyframes pulseSpecial{
+    0%,100%{ box-shadow:0 0 0 0 rgba(61,89,168,0.22); }
+    50%{ box-shadow:0 0 0 9px rgba(61,89,168,0); }
+  }
+
+  .converge-center{
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:104px; height:104px;
+    border-radius:26px;
+    background:var(--navy);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:var(--shadow-soft);
+    z-index:1;
+    animation:hubIn .5s ease both;
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .converge-center:hover{
+    transform:translate(-50%,-50%) scale(1.06);
+    box-shadow:0 24px 44px -20px rgba(31,41,55,0.45);
+  }
+  .converge-center img{
+    width:78px; height:78px;
+  }
+  .node{
+    position:absolute;
+    z-index:2;
+    width:150px;
+    padding:14px 16px;
+    border-radius:14px;
+    background:var(--white);
+    border:1px solid var(--border);
+    box-shadow:0 10px 26px -16px rgba(31,41,55,0.3);
+    font-size:13px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--navy);
+    animation:nodeIn .6s ease both;
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .node:hover{
+    transform:translateY(-4px);
+    box-shadow:0 18px 34px -16px rgba(31,41,55,0.35);
+    border-color:rgba(31,41,55,0.22);
+    z-index:3;
+  }
+  .node .dot{
+    width:8px; height:8px; border-radius:50%; flex-shrink:0;
+    transition:transform .2s ease;
+  }
+  .node:hover .dot{ transform:scale(1.35); }
+  .node.n1{ top:6%; left:2%; animation-delay:.15s; }
+  .node.n2{ top:2%; right:0%; animation-delay:.3s; }
+  .node.n3{ top:44%; left:-6%; animation-delay:.45s; }
+  .node.n4{ bottom:8%; left:6%; animation-delay:.6s; }
+  .node.n5{ bottom:0%; right:4%; animation-delay:.75s; }
+  .node.n6{ top:44%; right:-6%; animation-delay:.9s; }
+
+  .node.special{
+    background:linear-gradient(120deg, rgba(20,183,165,0.08), rgba(61,89,168,0.08)), var(--white);
+    border:1.5px dashed rgba(61,89,168,0.35);
+    box-shadow:none;
+    animation-name:nodeIn, pulseSpecial;
+    animation-duration:.6s, 2.6s;
+    animation-timing-function:ease, ease-in-out;
+    animation-delay:.9s, 2.4s;
+    animation-iteration-count:1, infinite;
+    animation-fill-mode:both, none;
+  }
+  .converge svg.lines{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    z-index:1;
+    animation:linesIn .8s ease both;
+  }
+
+  @media(max-width:900px){
+    .hero .wrap{ grid-template-columns:1fr; }
+    .converge{ height:320px; margin-top:20px; }
+    .node{ width:120px; font-size:12px; padding:10px 12px; }
+  }
+
+  /* ---------- Section shared ---------- */
+  section{ padding:96px 0; }
+
+  /* Scroll reveal (class added via JS, so content stays visible without it) */
+  .reveal{
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  .reveal.is-visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+  .section-head{
+    max-width:640px;
+    margin-bottom:56px;
+  }
+  .section-head h2{
+    font-size:clamp(28px,3.4vw,40px);
+    color:var(--navy);
+  }
+  .section-head p{
+    margin-top:16px;
+    font-size:17px;
+    color:var(--slate);
+  }
+
+  /* ---------- Pilares ---------- */
+  .pillars{
+    background:var(--slate-light);
+  }
+  .pillar-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:24px;
+  }
+  .pillar{
+    background:var(--white);
+    border-radius:18px;
+    padding:32px 28px;
+    border:1px solid var(--border);
+    position:relative;
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .pillar:hover{
+    transform:translateY(-4px);
+    box-shadow:0 18px 36px -20px rgba(31,41,55,0.28);
+    border-color:rgba(31,41,55,0.2);
+  }
+  .pillar-icon{
+    width:44px; height:44px;
+    border-radius:12px;
+    margin-bottom:18px;
+    transition:transform .2s ease;
+  }
+  .pillar:hover .pillar-icon{ transform:scale(1.06); }
+  .pillar .bar{
+    width:38px; height:4px; border-radius:4px;
+    margin-bottom:22px;
+    position:relative;
+    overflow:hidden;
+  }
+  .pillar .bar::after{
+    content:'';
+    position:absolute;
+    top:0; left:-60%;
+    width:60%; height:100%;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+    animation:barShimmer 1.8s ease-in-out infinite;
+  }
+  @keyframes barShimmer{
+    0%{ left:-60%; }
+    100%{ left:120%; }
+  }
+  .pillar h3{ font-size:21px; color:var(--navy); margin-bottom:12px; }
+  .pillar p{ color:var(--slate); font-size:15.5px; }
+  .pillar.adapt .bar{ background:var(--turquesa); }
+  .pillar.present .bar{ background:var(--azul); }
+  .pillar.agile .bar{ background:var(--lila); }
+
+  @media(max-width:860px){
+    .pillar-grid{ grid-template-columns:1fr; }
+  }
+
+  /* ---------- Funcionalidades ---------- */
+  .features .section-head{ max-width:720px; }
+  .feature-list{
+    display:flex;
+    flex-direction:column;
+    gap:0;
+  }
+  .feature-row{
+    display:grid;
+    grid-template-columns:220px 1fr;
+    gap:36px;
+    padding:34px 20px;
+    margin:0 -20px;
+    border-top:1px solid var(--border);
+    align-items:start;
+    border-radius:14px;
+    transition:background-color .2s ease, padding-left .2s ease;
+  }
+  .feature-row:last-child{ border-bottom:1px solid var(--border); }
+  .feature-row:hover{
+    background:var(--slate-light);
+    padding-left:28px;
+  }
+  .feature-label{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:19px;
+    font-weight:700;
+    color:var(--navy);
+  }
+  .feature-icon{
+    width:38px; height:38px;
+    border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+    transition:transform .2s ease;
+  }
+  .feature-icon img{ width:100%; height:100%; }
+  .feature-row:hover .feature-icon{ transform:scale(1.08); }
+  .feature-row p{ color:var(--slate); font-size:16px; max-width:56ch; }
+
+  @media(max-width:700px){
+    .feature-row{ grid-template-columns:1fr; gap:14px; }
+  }
+
+  /* ---------- Personalización (dark) ---------- */
+  .personalize{
+    background:var(--navy);
+    color:var(--white);
+  }
+  .personalize .wrap{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:64px;
+    align-items:start;
+  }
+  .personalize h2{ color:var(--white); font-size:clamp(28px,3.4vw,38px); }
+  .personalize .quote{
+    margin-top:26px;
+    font-size:20px;
+    font-weight:600;
+    color:var(--white);
+    padding-left:20px;
+    border-left:3px solid var(--turquesa);
+    max-width:44ch;
+  }
+  .p-items{
+    display:flex;
+    flex-direction:column;
+    gap:28px;
+  }
+  .p-item{
+    padding-left:16px;
+    border-left:2px solid transparent;
+    transition:transform .2s ease, border-color .2s ease;
+  }
+  .p-item:hover{
+    transform:translateX(6px);
+    border-color:var(--turquesa);
+  }
+  .p-item h4{
+    font-size:17px;
+    font-weight:700;
+    margin-bottom:8px;
+    color:var(--white);
+  }
+  .p-item p{
+    color:#b7c0cb;
+    font-size:15.5px;
+  }
+  .p-item .idx{
+    display:inline-block;
+    font-size:13px;
+    font-weight:700;
+    color:var(--turquesa);
+    margin-bottom:10px;
+    transition:color .2s ease;
+  }
+  .p-item:hover .idx{ color:#5fe0cf; }
+
+  @media(max-width:860px){
+    .personalize .wrap{ grid-template-columns:1fr; gap:40px; }
+  }
+
+  /* ---------- Contacto ---------- */
+  .contact{
+    background:var(--slate-light);
+  }
+  .contact-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:64px;
+    align-items:center;
+  }
+  .contact h2{
+    font-size:clamp(28px,3.6vw,42px);
+    color:var(--navy);
+  }
+  .contact p.lead{
+    margin-top:18px;
+    font-size:17px;
+    color:var(--slate);
+    max-width:42ch;
+  }
+  .contact-ctas{
+    margin-top:30px;
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+
+  form{
+    background:var(--white);
+    border-radius:20px;
+    padding:36px;
+    border:1px solid var(--border);
+    box-shadow:var(--shadow-soft);
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+  .field label{
+    display:block;
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--navy);
+    margin-bottom:7px;
+  }
+  .field input, .field textarea{
+    width:100%;
+    padding:12px 14px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    font-family:inherit;
+    font-size:15px;
+    color:var(--navy);
+    background:var(--white);
+    transition:border-color .15s ease;
+  }
+  .field input:focus, .field textarea:focus{
+    border-color:var(--turquesa);
+    outline:none;
+  }
+  .field textarea{ resize:vertical; min-height:96px; }
+  form .btn-grad{ width:100%; text-align:center; margin-top:6px; border-radius:10px; }
+
+  .form-success{
+    background:var(--white);
+    border-radius:20px;
+    padding:48px 36px;
+    border:1px solid var(--border);
+    box-shadow:var(--shadow-soft);
+    text-align:center;
+  }
+  .form-success .check{
+    width:52px; height:52px;
+    margin:0 auto 18px;
+    border-radius:50%;
+    background:var(--grad);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .form-success h3{ font-size:22px; color:var(--navy); margin-bottom:10px; }
+  .form-success p{ color:var(--slate); font-size:15.5px; }
+
+  @media(max-width:860px){
+    .contact-grid{ grid-template-columns:1fr; gap:40px; }
+  }
+
+  /* ---------- Footer ---------- */
+  footer{
+    background:var(--navy);
+    color:#c7cfd8;
+    padding:64px 0 32px;
+  }
+  .footer-top{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:40px;
+    padding-bottom:40px;
+    border-bottom:1px solid rgba(255,255,255,0.12);
+  }
+  .footer-logo{
+    margin-bottom:14px;
+  }
+  .footer-logo-img{
+    height:28px;
+    width:auto;
+    display:block;
+  }
+  .footer-tagline{ font-size:14.5px; color:#9aa5b1; max-width:26ch; }
+
+  .footer-col h5{
+    font-size:14px;
+    font-weight:700;
+    color:var(--white);
+    margin-bottom:14px;
+  }
+  .footer-col p, .footer-col a{
+    display:block;
+    font-size:14.5px;
+    color:#9aa5b1;
+    margin-bottom:9px;
+    transition:color .15s ease;
+  }
+  .footer-col a:hover{ color:var(--white); }
+
+  .social-row{ display:flex; gap:10px; margin-top:6px; }
+  .social-row a{
+    width:36px; height:36px;
+    border-radius:9px;
+    background:rgba(255,255,255,0.08);
+    display:flex; align-items:center; justify-content:center;
+    border:1px solid rgba(255,255,255,0.14);
+  }
+  .social-row a:hover{ background:rgba(255,255,255,0.16); }
+
+  .footer-bottom{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    padding-top:26px;
+    font-size:13.5px;
+    color:#7c8794;
+  }
+
+  @media(max-width:700px){
+    .footer-top{ flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo">
+      <img class="logo-img" src="versoes%20da%20logo/izzyone-lockup-horizontal.png" alt="izzyone">
+    </div>
+    <nav class="nav-links">
+      <a href="#producto">Producto</a>
+      <a href="#personalizacion">Personalización</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn-primary" href="#contacto">Solicita una demo</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileNav">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+    </div>
+  </div>
+  <nav class="mobile-nav" id="mobileNav">
+    <div class="wrap">
+      <a href="#producto">Producto</a>
+      <a href="#personalizacion">Personalización</a>
+      <a href="#contacto">Contacto</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow-plain">El CRM que se adapta a tu negocio</p>
+        <h1>Todo en un solo lugar.</h1>
+        <p class="sub">El CRM que se adapta a tu negocio, no al revés. Simple, rápido y hecho para ti.</p>
+        <div class="hero-ctas">
+          <a href="#contacto" class="btn-grad">Contactanos</a>
+        </div>
+      </div>
+
+      <div class="converge" aria-hidden="true">
+        <svg class="lines" viewBox="0 0 500 420" preserveAspectRatio="none">
+          <line x1="120" y1="55" x2="250" y2="205" stroke="#607D8B" stroke-width="1.4" stroke-dasharray="3 5" opacity="0.5"/>
+          <line x1="380" y1="40" x2="250" y2="205" stroke="#607D8B" stroke-width="1.4" stroke-dasharray="3 5" opacity="0.5"/>
+          <line x1="70" y1="215" x2="250" y2="210" stroke="#607D8B" stroke-width="1.4" stroke-dasharray="3 5" opacity="0.5"/>
+          <line x1="120" y1="360" x2="250" y2="215" stroke="#607D8B" stroke-width="1.4" stroke-dasharray="3 5" opacity="0.5"/>
+          <line x1="400" y1="380" x2="250" y2="215" stroke="#607D8B" stroke-width="1.4" stroke-dasharray="3 5" opacity="0.5"/>
+          <line x1="430" y1="215" x2="250" y2="210" stroke="#607D8B" stroke-width="1.4" stroke-dasharray="3 5" opacity="0.5"/>
+        </svg>
+
+        <div class="node n1"><span class="dot" style="background:var(--turquesa)"></span>Gestión financiera</div>
+        <div class="node n2"><span class="dot" style="background:var(--azul)"></span>Agente de IA por WhatsApp</div>
+        <div class="node n3"><span class="dot" style="background:var(--lila)"></span>Agenda del equipo</div>
+        <div class="node n4"><span class="dot" style="background:var(--azul)"></span>Gestión de inventario</div>
+        <div class="node n5"><span class="dot" style="background:var(--turquesa)"></span>Historial de clientes</div>
+        <div class="node n6 special">
+          <span class="dot" style="background:var(--grad)"></span>
+          Flujos hechos con tus reglas de negocio
+        </div>
+
+        <div class="converge-center">
+          <img src="versoes%20da%20logo/izzyone-icone-isolado.png" alt="izzyone">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PILARES -->
+  <section class="pillars" id="producto">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Por qué izzyone.</h2>
+        <p>Un CRM confiable, inteligente y cercano, que refleja cada decisión que tomamos, tanto en lo visual como en lo que construimos.</p>
+      </div>
+      <div class="pillar-grid">
+        <div class="pillar adapt">
+          <img class="pillar-icon" src="icones/01_adaptable.png" alt="">
+          <div class="bar"></div>
+          <h3>Adaptable</h3>
+          <p>Cada negocio tiene su forma de operar, por eso Izzy One se ajusta a tus servicios, procesos y necesidades en lugar de imponerte una plantilla rígida.</p>
+        </div>
+        <div class="pillar present">
+          <img class="pillar-icon" src="icones/02_presente.png" alt="">
+          <div class="bar"></div>
+          <h3>Presente</h3>
+          <p>Más que atender, construimos conexión. Te acompañamos para entender, acompañar y evolucionar junto a tu equipo.</p>
+        </div>
+        <div class="pillar agile">
+          <img class="pillar-icon" src="icones/03_agil.png" alt="">
+          <div class="bar"></div>
+          <h3>Ágil</h3>
+          <p>Menos esfuerzo, más impacto. La IA y los procesos simples hacen que gestionar tu operación sea más fácil.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FUNCIONALIDADES -->
+  <section class="features">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Un ecosistema digital para comunicarte, conectar y gestionar tus relaciones desde un solo lugar.</h2>
+      </div>
+
+      <div class="feature-list">
+        <div class="feature-row r1">
+          <div class="feature-label">
+            <span class="feature-icon">
+              <img src="icones/05_redes_sociales.png" alt="">
+            </span>
+            Integración de datos
+          </div>
+          <p>Conecta y centraliza la información de tus clientes, ventas y operaciones en un solo lugar, sin duplicar datos ni saltar entre herramientas.</p>
+        </div>
+
+        <div class="feature-row r2">
+          <div class="feature-label">
+            <span class="feature-icon">
+              <img src="icones/07_agente_ia_whatsapp.png" alt="">
+            </span>
+            Agente de IA por WhatsApp
+          </div>
+          <p>Tus clientes agendan sus consultas solos, por WhatsApp, en cualquier momento. El agente conversa, entiende la disponibilidad y confirma el turno sin que nadie tenga que estar del otro lado.</p>
+        </div>
+
+        <div class="feature-row r3">
+          <div class="feature-label">
+            <span class="feature-icon">
+              <img src="icones/06_crm_propio.png" alt="">
+            </span>
+            CRM propio
+          </div>
+          <p>Organiza servicios, disponibilidad y agenda de tus colaboradores en un solo lugar. Con vista de gestión para el negocio y vista operativa para el día a día del equipo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERSONALIZACIÓN -->
+  <section class="personalize" id="personalizacion">
+    <div class="wrap">
+      <div>
+        <h2>No vendemos un CRM genérico.</h2>
+        <p class="quote">Construimos uno que entiende cómo trabajas.</p>
+      </div>
+
+      <div class="p-items">
+        <div class="p-item">
+          <span class="idx">Cómo se adapta</span>
+          <h4>Flujos configurables según tu rubro</h4>
+          <p>Campos y automatizaciones que se ajustan a servicios, comercio, salud y más, sin forzarte a cambiar cómo trabajas.</p>
+        </div>
+        <div class="p-item">
+          <span class="idx">Acompañamiento humano</span>
+          <h4>Onboarding guiado</h4>
+          <p>No es un software que se entrega y se abandona. Te acompañamos desde el primer día.</p>
+        </div>
+        <div class="p-item">
+          <span class="idx">Escalable</span>
+          <h4>Crece con el negocio</h4>
+          <p>De un equipo chico a una operación más compleja, sin migrar de herramienta.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section class="contact" id="contacto">
+    <div class="wrap contact-grid">
+      <div>
+        <h2>Estamos para ayudarte a resolverlo, sin vueltas.</h2>
+        <p class="lead">Cuéntanos qué necesitas y te mostramos cómo izzyone se adapta a tu negocio.</p>
+       
+      </div>
+
+      <div class="form-wrap">
+        <form id="contact-form">
+          <div class="field">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="tu@empresa.com" required>
+          </div>
+          <div class="field">
+            <label for="empresa">Empresa</label>
+            <input type="text" id="empresa" name="empresa" placeholder="Nombre de tu empresa">
+          </div>
+          <div class="field">
+            <label for="mensaje">Mensaje</label>
+            <textarea id="mensaje" name="mensaje" placeholder="Cuéntanos qué necesitas" required></textarea>
+          </div>
+          <button type="submit" class="btn-grad">Agenda una demo</button>
+        </form>
+
+        <div class="form-success" id="formSuccess" hidden>
+          <span class="check">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 13L10 18L19 7" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <h3>¡Gracias!</h3>
+          <p>Recibimos tu mensaje. Nuestro equipo te va a contactar a la brevedad.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div style="max-width:280px;">
+        <div class="footer-logo">
+          <img class="footer-logo-img" src="versoes%20da%20logo/izzyone-versao-negativa-fundo-escuro.png" alt="izzyone">
+        </div>
+        <p class="footer-tagline">Todo en un solo lugar.</p>
+        <div class="social-row">
+          <a href="#" aria-label="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 9H8V20H4V9Z" fill="#c7cfd8"/><circle cx="6" cy="5" r="2" fill="#c7cfd8"/><path d="M11 9H15V11C15.6 9.8 17 9 18.5 9C21 9 22 10.8 22 13.5V20H18V14.5C18 13 17.5 12 16.2 12C15.2 12 14.6 12.7 14.3 13.4C14.2 13.7 14.2 14.1 14.2 14.4V20H10.2C10.2 20 10.3 10.2 10.2 9H11Z" fill="#c7cfd8"/></svg></a>
+          <a href="https://www.instagram.com/izzyone.ec?igsi=MWhkajIxdGM4M2Zs" target="_blank" rel="noopener" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="#c7cfd8" stroke-width="1.8"/><circle cx="12" cy="12" r="4" stroke="#c7cfd8" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.1" fill="#c7cfd8"/></svg></a>
+          <a href="https://www.tiktok.com/@izzy.one5?_r=1&amp;_t=ZS-99OxoWxOyDF" target="_blank" rel="noopener" aria-label="TikTok"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M16.5 3C16.5 5.5 18.3 7.5 20.7 7.8V10.9C19.1 10.9 17.6 10.4 16.4 9.5V15.8C16.4 19.2 13.6 22 10.2 22C6.8 22 4 19.2 4 15.8C4 12.4 6.8 9.6 10.2 9.6C10.6 9.6 11 9.6 11.4 9.7V12.9C11 12.8 10.6 12.7 10.2 12.7C8.5 12.7 7.1 14.1 7.1 15.8C7.1 17.5 8.5 18.9 10.2 18.9C11.9 18.9 13.3 17.5 13.3 15.8V2H16.5V3Z" fill="#c7cfd8"/></svg></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h5>Contacto</h5>
+        <a href="tel:+59322501234">+593 2 250-1234</a>
+        <a href="mailto:hola@izzyone.com">hola@izzyone.com</a>
+        <a href="#">Av. Amazonas N34-451, Quito, Ecuador</a>
+        <a href="https://izzyone.tech">www.izzyone.tech</a>
+      </div>
+
+      <div class="footer-col">
+        <h5>Producto</h5>
+        <a href="#producto">Por qué izzyone</a>
+        <a href="#personalizacion">Personalización</a>
+        <a href="#contacto">Solicita una demo</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>izzyone. Todos los derechos reservados.</span>
+      <span>Todo en un solo lugar.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Menú mobile
+  var toggle = document.getElementById('menuToggle');
+  var mobileNav = document.getElementById('mobileNav');
+  if(toggle && mobileNav){
+    var closeMenu = function(){
+      mobileNav.classList.remove('open');
+      toggle.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded','false');
+    };
+    toggle.addEventListener('click', function(){
+      var open = mobileNav.classList.toggle('open');
+      toggle.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    mobileNav.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', closeMenu);
+    });
+  }
+
+  // Revelado suave al hacer scroll (progressive enhancement: sin JS, todo queda visible)
+  if('IntersectionObserver' in window){
+    var revealEls = document.querySelectorAll('.pillar, .feature-row, .p-item, .form-wrap');
+    revealEls.forEach(function(el, i){
+      el.classList.add('reveal');
+      el.style.transitionDelay = ((i % 3) * 0.08) + 's';
+    });
+    var revealIO = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          revealIO.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.15, rootMargin:'0px 0px -40px 0px' });
+    revealEls.forEach(function(el){ revealIO.observe(el); });
+  }
+
+  // Link activo en el nav según la sección visible
+  var sections = document.querySelectorAll('main section[id]');
+  var navLinks = document.querySelectorAll('.nav-links a, .mobile-nav a');
+  if('IntersectionObserver' in window && sections.length){
+    var navIO = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          var id = entry.target.id;
+          navLinks.forEach(function(link){
+            link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+          });
+        }
+      });
+    }, { rootMargin:'-45% 0px -50% 0px' });
+    sections.forEach(function(s){ navIO.observe(s); });
+  }
+
+  // Feedback del formulario de contacto (no hay backend: mostramos confirmación local)
+  var form = document.getElementById('contact-form');
+  var success = document.getElementById('formSuccess');
+  if(form && success){
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      if(!form.checkValidity()){
+        form.reportValidity();
+        return;
+      }
+      form.hidden = true;
+      success.hidden = false;
+      success.classList.add('reveal');
+      requestAnimationFrame(function(){
+        success.classList.add('is-visible');
+      });
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
