@@ -17,7 +17,7 @@
     --lila: #8660A9;
     --azul: #3D59A8;
     --turquesa: #14B7A5;
-    --grad: linear-gradient(120deg, var(--turquesa), var(--azul));
+    --grad: var(--slate);
     --border: rgba(31,41,55,0.12);
     --shadow-soft: 0 20px 40px -24px rgba(31,41,55,0.35);
     --max: 1180px;
@@ -229,7 +229,7 @@
     padding:14px 26px;
     border-radius:12px;
     font-size:16px;
-    box-shadow:0 14px 30px -12px rgba(20,183,165,0.55);
+    box-shadow:0 14px 30px -12px rgba(96,125,139,0.55);
     transition:transform .15s ease, box-shadow .2s ease;
   }
   .btn-grad:hover{ transform:translateY(-2px); box-shadow:0 18px 34px -12px rgba(20,183,165,0.65); }
@@ -248,6 +248,9 @@
   .converge{
     position:relative;
     height:420px;
+  }
+  .converge.small{
+    height:320px;
   }
   @keyframes nodeIn{
     from{ opacity:0; transform:translateY(10px) scale(.96); }
@@ -270,9 +273,6 @@
     position:absolute;
     top:50%; left:50%;
     transform:translate(-50%,-50%);
-    width:104px; height:104px;
-    border-radius:26px;
-    background:var(--navy);
     display:flex; align-items:center; justify-content:center;
     box-shadow:var(--shadow-soft);
     z-index:1;
@@ -283,8 +283,25 @@
     transform:translate(-50%,-50%) scale(1.06);
     box-shadow:0 24px 44px -20px rgba(31,41,55,0.45);
   }
-  .converge-center img{
-    width:78px; height:78px;
+  .converge-center.hub-crm{
+    width:104px; height:104px;
+    border-radius:26px;
+    background:var(--navy);
+  }
+  .converge-center.hub-crm img{
+    width:74px; height:74px;
+  }
+  .converge-center.hub-agent{
+    width:104px; height:104px;
+    border-radius:50%;
+    background:var(--white);
+    border:4px solid var(--turquesa);
+    overflow:hidden;
+  }
+  .converge-center.hub-agent img{
+    width:100%; height:100%;
+    object-fit:cover;
+    border-radius:50%;
   }
   .node{
     position:absolute;
@@ -301,6 +318,7 @@
     align-items:center;
     gap:10px;
     color:var(--navy);
+    overflow-wrap:anywhere;
     animation:nodeIn .6s ease both;
     transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
   }
@@ -316,11 +334,14 @@
   }
   .node:hover .dot{ transform:scale(1.35); }
   .node.n1{ top:6%; left:2%; animation-delay:.15s; }
-  .node.n2{ top:2%; right:0%; animation-delay:.3s; }
-  .node.n3{ top:44%; left:-6%; animation-delay:.45s; }
-  .node.n4{ bottom:8%; left:6%; animation-delay:.6s; }
-  .node.n5{ bottom:0%; right:4%; animation-delay:.75s; }
-  .node.n6{ top:44%; right:-6%; animation-delay:.9s; }
+  .node.n3{ top:44%; left:-6%; animation-delay:.3s; }
+  .node.n4{ bottom:8%; left:6%; animation-delay:.45s; }
+  .node.n5{ bottom:0%; right:4%; animation-delay:.6s; }
+  .node.n6{ top:44%; right:-6%; animation-delay:.75s; }
+
+  .node.a1{ top:6%; left:0%; animation-delay:.15s; }
+  .node.a2{ top:6%; right:-2%; animation-delay:.3s; }
+  .node.a3{ bottom:4%; left:calc(50% - 75px); animation-delay:.45s; }
 
   .node.special{
     background:linear-gradient(120deg, rgba(20,183,165,0.08), rgba(61,89,168,0.08)), var(--white);
@@ -342,8 +363,24 @@
 
   @media(max-width:900px){
     .hero .wrap{ grid-template-columns:1fr; }
-    .converge{ height:320px; margin-top:20px; }
-    .node{ width:120px; font-size:12px; padding:10px 12px; }
+    .converge{ height:320px; width:100%; max-width:360px; margin:20px auto 0; }
+    .converge.small{ height:280px; margin-top:0; }
+    .node{ width:140px; font-size:12px; padding:10px 12px; }
+    .node.a3{ left:calc(50% - 70px); }
+  }
+
+  /* ---------- IA destacada ---------- */
+  .ai-benefits-body{
+    display:grid;
+    grid-template-columns:0.95fr 1.05fr;
+    gap:56px;
+    align-items:center;
+  }
+  .ai-benefits .ai-benefit-grid{
+    grid-template-columns:1fr;
+  }
+  @media(max-width:860px){
+    .ai-benefits-body{ grid-template-columns:1fr; gap:40px; }
   }
 
   /* ---------- Section shared ---------- */
@@ -431,6 +468,44 @@
 
   @media(max-width:860px){
     .pillar-grid{ grid-template-columns:1fr; }
+  }
+
+  /* ---------- Beneficios IA ---------- */
+  .ai-benefit-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:24px;
+  }
+  .ai-benefit{
+    background:var(--slate-light);
+    border-radius:18px;
+    padding:32px 28px;
+    border:1px solid var(--border);
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .ai-benefit:hover{
+    transform:translateY(-4px);
+    box-shadow:0 18px 36px -20px rgba(31,41,55,0.28);
+    border-color:rgba(31,41,55,0.2);
+  }
+  .ai-benefit-icon{
+    width:44px; height:44px;
+    border-radius:12px;
+    margin-bottom:18px;
+  }
+  .ai-benefit .bar{
+    width:38px; height:4px; border-radius:4px;
+    margin-bottom:22px;
+  }
+  .ai-benefit h3{ font-size:21px; color:var(--navy); margin-bottom:12px; }
+  .ai-benefit p{ color:var(--slate); font-size:15.5px; }
+  .ai-benefit:nth-child(1) .bar{ background:var(--turquesa); }
+  .ai-benefit:nth-child(1) h3{ color:var(--turquesa); }
+  .ai-benefit:nth-child(2) .bar{ background:var(--azul); }
+  .ai-benefit:nth-child(2) h3{ color:var(--azul); }
+
+  @media(max-width:860px){
+    .ai-benefit-grid{ grid-template-columns:1fr; }
   }
 
   /* ---------- Funcionalidades ---------- */
@@ -701,6 +776,7 @@
     flex-direction:column;
     gap:18px;
   }
+  form[hidden]{ display:none; }
   .field label{
     display:block;
     font-size:13.5px;
@@ -849,9 +925,9 @@
   <section class="hero">
     <div class="wrap">
       <div>
-        <p class="eyebrow-plain">El CRM que se adapta a tu negocio</p>
-        <h1>Todo en un solo <span class="accent">lugar.</span></h1>
-        <p class="sub">El CRM que se adapta a tu negocio, no al revés. Simple, rápido y hecho para ti.</p>
+        <p class="eyebrow-plain">Tu negocio evoluciona. Tu CRM también.</p>
+        <h1>El CRM que se adapta a tu <span class="accent">negocio.</span></h1>
+        <p class="sub">Un agente de IA conversa con tus clientes por WhatsApp y automatiza tareas repetitivas, en un CRM que se adapta a tu forma de trabajar. Todo lo que necesitas para gestionar tu negocio, en un solo lugar.</p>
         <div class="hero-ctas">
           <a href="#contacto" class="btn-grad">Contactanos</a>
         </div>
@@ -860,7 +936,6 @@
       <div class="converge" aria-hidden="true">
         <svg class="lines" viewBox="0 0 500 420" preserveAspectRatio="none">
           <line x1="120" y1="55" x2="250" y2="205" stroke="#607D8B" stroke-width="1.4" stroke-dasharray="3 5" opacity="0.5"/>
-          <line x1="380" y1="40" x2="250" y2="205" stroke="#607D8B" stroke-width="1.4" stroke-dasharray="3 5" opacity="0.5"/>
           <line x1="70" y1="215" x2="250" y2="210" stroke="#607D8B" stroke-width="1.4" stroke-dasharray="3 5" opacity="0.5"/>
           <line x1="120" y1="360" x2="250" y2="215" stroke="#607D8B" stroke-width="1.4" stroke-dasharray="3 5" opacity="0.5"/>
           <line x1="400" y1="380" x2="250" y2="215" stroke="#607D8B" stroke-width="1.4" stroke-dasharray="3 5" opacity="0.5"/>
@@ -868,16 +943,15 @@
         </svg>
 
         <div class="node n1"><span class="dot" style="background:var(--turquesa)"></span>Gestión financiera</div>
-        <div class="node n2"><span class="dot" style="background:var(--azul)"></span>Agente de IA por WhatsApp</div>
-        <div class="node n3"><span class="dot" style="background:var(--lila)"></span>Agenda del equipo</div>
-        <div class="node n4"><span class="dot" style="background:var(--azul)"></span>Gestión de inventario</div>
+        <div class="node n3"><span class="dot" style="background:var(--lila)"></span>Agenda inteligente del equipo</div>
+        <div class="node n4"><span class="dot" style="background:var(--azul)"></span>Inventario conectado</div>
         <div class="node n5"><span class="dot" style="background:var(--turquesa)"></span>Historial de clientes</div>
         <div class="node n6 special">
           <span class="dot" style="background:var(--grad)"></span>
-          Flujos hechos con tus reglas de negocio
+          Procesos adaptados a tu negocio
         </div>
 
-        <div class="converge-center">
+        <div class="converge-center hub-crm">
           <img src="versoes%20da%20logo/izzyone-icone-isolado.png" alt="izzyone">
         </div>
       </div>
@@ -914,6 +988,48 @@
     </div>
   </section>
 
+  <!-- BENEFICIOS IA -->
+  <section class="ai-benefits" id="ia">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Una IA que trabaja como parte de tu equipo.</h2>
+        <p>Izzy One entiende tus procesos, sigue tus reglas y automatiza tareas para que tu equipo pueda enfocarse en lo que realmente importa: tus clientes.</p>
+      </div>
+      <div class="ai-benefits-body">
+        <div class="converge small" aria-hidden="true">
+          <svg class="lines" viewBox="0 0 500 320" preserveAspectRatio="none">
+            <line x1="90" y1="55" x2="250" y2="150" stroke="#14B7A5" stroke-width="1.4" stroke-dasharray="3 5" opacity="0.5"/>
+            <line x1="410" y1="55" x2="250" y2="150" stroke="#14B7A5" stroke-width="1.4" stroke-dasharray="3 5" opacity="0.5"/>
+            <line x1="250" y1="275" x2="250" y2="165" stroke="#14B7A5" stroke-width="1.4" stroke-dasharray="3 5" opacity="0.5"/>
+          </svg>
+
+          <div class="node a1"><span class="dot" style="background:var(--turquesa)"></span>Recordatorios automáticos por WhatsApp</div>
+          <div class="node a2"><span class="dot" style="background:var(--turquesa)"></span>Agendamientos</div>
+          <div class="node a3"><span class="dot" style="background:var(--turquesa)"></span>Resuelve dudas de tus clientes</div>
+
+          <div class="converge-center hub-agent">
+            <img src="icones/agente-ia.png" alt="Agente de IA de izzyone">
+          </div>
+        </div>
+
+        <div class="ai-benefit-grid">
+          <div class="ai-benefit">
+            <img class="ai-benefit-icon" src="icones/07_agente_ia_whatsapp.png" alt="">
+            <div class="bar"></div>
+            <h3>Atiende por ti</h3>
+            <p>Tu agente de IA conversa con tus clientes por WhatsApp, responde consultas y gestiona reservas de forma automática.</p>
+          </div>
+          <div class="ai-benefit">
+            <img class="ai-benefit-icon" src="icones/03_agil.png" alt="">
+            <div class="bar"></div>
+            <h3>Automatiza tus procesos</h3>
+            <p>Convierte tareas repetitivas en flujos inteligentes que siguen las reglas de tu negocio.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- FUNCIONALIDADES -->
   <section class="features">
     <div class="wrap">
@@ -935,11 +1051,11 @@
         <div class="feature-row r2">
           <div class="feature-label">
             <span class="feature-icon">
-              <img src="icones/07_agente_ia_whatsapp.png" alt="">
+              <img src="icones/04_comunicacion_digital.png" alt="">
             </span>
-            Agente de IA por WhatsApp
+            Campañas de WhatsApp
           </div>
-          <p>Tus clientes agendan sus consultas solos, por WhatsApp, en cualquier momento. El agente conversa, entiende la disponibilidad y confirma el turno sin que nadie tenga que estar del otro lado.</p>
+          <p>Envía campañas y recordatorios masivos por WhatsApp, y mide aperturas, respuestas y conversiones desde el mismo panel.</p>
         </div>
 
         <div class="feature-row r3">
@@ -1035,7 +1151,11 @@
       </div>
 
       <div class="form-wrap">
-        <form id="contact-form">
+        <form id="contact-form" action="https://formsubmit.co/contacto@izzyone.tech" method="POST">
+          <input type="hidden" name="_subject" value="Nuevo contacto desde izzyone.tech">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
           <div class="field">
             <label for="nombre">Nombre</label>
             <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
@@ -1090,9 +1210,8 @@
 
       <div class="footer-col">
         <h5>Contacto</h5>
-        <a href="tel:+59322501234">+593 2 250-1234</a>
-        <a href="mailto:hola@izzyone.com">hola@izzyone.com</a>
-        <a href="#">Av. Amazonas N34-451, Quito, Ecuador</a>
+        <a href="mailto:contacto@izzyone.tech">contacto@izzyone.tech</a>
+        <a href="#">Av. República del Salvador, Quito - Ecuador</a>
         <a href="https://izzyone.tech">www.izzyone.tech</a>
       </div>
 
@@ -1219,7 +1338,7 @@
     });
   }
 
-  // Feedback del formulario de contacto (no hay backend: mostramos confirmación local)
+  // Formulario de contacto: envía por AJAX a FormSubmit (sin backend propio)
   var form = document.getElementById('contact-form');
   var success = document.getElementById('formSuccess');
   if(form && success){
@@ -1229,11 +1348,32 @@
         form.reportValidity();
         return;
       }
-      form.hidden = true;
-      success.hidden = false;
-      success.classList.add('reveal');
-      requestAnimationFrame(function(){
-        success.classList.add('is-visible');
+      var submitBtn = form.querySelector('button[type="submit"]');
+      var originalLabel = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Enviando...';
+
+      fetch('https://formsubmit.co/ajax/contacto@izzyone.tech', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: new FormData(form)
+      }).then(function(res){
+        return res.json().then(function(data){
+          if(!res.ok || data.success === 'false' || data.success === false){
+            throw new Error(data && data.message ? data.message : 'request failed');
+          }
+          form.hidden = true;
+          success.hidden = false;
+          success.classList.add('reveal');
+          requestAnimationFrame(function(){
+            success.classList.add('is-visible');
+          });
+        });
+      }).catch(function(err){
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+        console.error('Contact form submission failed:', err);
+        alert('No pudimos enviar tu mensaje. Por favor intenta de nuevo o escríbenos directamente a contacto@izzyone.tech.');
       });
     });
   }
